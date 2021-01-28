@@ -86,32 +86,36 @@ function should-merge-branch {
   remote=$2
   echo $branch_to_merge
   echo $name
-        if [[ $branch_to_merge == *"feature"* ]]
+        # if [[ $branch_to_merge == *"feature"* ]]
+        # then
+        #         if git-is-merged "$remote/" $branch_to_merge
+        #         then
+        #                 echo "feature merged don't need to merge to mono"
+        #                 return 1
+        #         else
+        #                 return 0
+        #         fi
+        # elif [[ $branch_to_merge == *"accept"* ]]
+        if [[ $branch_to_merge == *"accept"* ]]
         then
-                if git-is-merged "$remote/develop" $branch_to_merge
-                then
-                        echo "feature merged don't need to merge to mono"
-                        return 1
-                else
-                        return 0
-                fi
-        elif [[ $branch_to_merge == *"develop"* ]]
+                echo "accept"
+                return 0
+        elif [[ $branch_to_merge == *"dev"* ]]
         then
-                echo "develop"
+                echo "dev"
                 return 0
         elif [[ $branch_to_merge == *"master"* ]]
         then
                 echo "master"
                 return 0
-                elif [[ $branch_to_merge == *"release"* ]]
+        elif [[ $branch_to_merge == *"test"* ]]
         then
-                echo "release"
+                echo "test"
                 return 0
         else
-                if git-is-merged "$remote/master" $branch_to_merge || git-is-merged "$remote/develop" $branch_to_merge
+                if git-is-merged "$remote/master" $branch_to_merge
                 then
-                        echo "merged into master or develop don't merge"
-                        echo $(git merge-base "$remote/develop" $branch_to_merge)
+                        echo "merged into master don't merge"
                         echo $(git merge-base "$remote/master" $branch_to_merge )
                         echo $(git rev-parse $branch_to_merge)
                         return 1
@@ -220,7 +224,7 @@ function create-mono {
                     git filter-repo --force --path-rename :$folder/ --refs temp-munge-branch
                     git tag $name/$tag
                     git tag -d $tag
-                    git checkout -q develop
+                    git checkout -q dev
                     git branch -D temp-munge-branch
                 fi
         done
